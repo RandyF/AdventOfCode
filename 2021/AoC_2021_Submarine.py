@@ -1,5 +1,6 @@
 from AoC_Utils import *
 from math import ceil
+import numpy as np
 
 from AoC_2021_BingoSubsystem import BingoSubsystem
 
@@ -125,3 +126,80 @@ class Submarine():
         debug('Life Support Rating is %d' % LifeSupportRating, DebugLevel=1, Verbosity=self.Verbosity )
         
         return [LifeSupportRating, O2GenRating, C02ScrubRating]
+
+
+    #------------------------------------------------------------------------------
+    # --- Day 5: Hydrothermal Venture ---
+    #------------------------------------------------------------------------------
+    def _DrawSimpleLine(self, Points, MapSize):
+        #print("\nDrawing Line:", Points, MapSize)
+
+        tLine = np.zeros( [MapSize, MapSize], dtype=np.uint8)
+        
+        [txStart, tEnd] = Points[:,1]
+        txSteps = tEnd - txStart
+        
+        txInc = 1
+        if txSteps < 1:
+            txInc = -1
+            txSteps = -txSteps
+
+        [tyStart, tEnd] = Points[:,0]
+        tySteps = tEnd - tyStart
+        
+        tyInc = 1
+        if tySteps < 1:
+            tyInc = -1
+            tySteps = -tySteps
+
+
+        if txSteps == 0:
+            xVals = [txStart] * (tySteps + 1)
+        else:
+            xVals = []
+            for i in range(txSteps+1):
+                xVals.append( txStart + txInc * i)
+
+        if tySteps == 0:
+            yVals = [tyStart] * (txSteps + 1)
+        else:
+            yVals = []
+            for i in range(tySteps+1):
+                yVals.append( tyStart + tyInc * i)
+
+
+        for i in range(len(xVals)):
+
+                tLine[xVals[i],yVals[i]] += 1
+
+        return(tLine)
+
+
+    def DetectThermalVentLines(self, Data, OnlyHV=False):
+
+        MapSizeMax = 0
+        tNewData = []
+
+        for i in Data:
+            MapSizeMax = max(MapSizeMax, np.max(i))
+            
+            if OnlyHV:
+                # Limit to JUST H/V lines
+                if (np.max(i[:,0]) == np.min(i[:,0]) or np.max(i[:,1]) == np.min(i[:,1])):
+                    tNewData.append(i)
+            else:
+                tNewData.append(i)
+
+        MapSizeMax += 1
+
+        Map = np.zeros( (MapSizeMax, MapSizeMax), dtype=np.uint8)
+
+        for i in tNewData:
+            tNewLine = self._DrawSimpleLine(i, MapSizeMax)
+            Map = np.add( Map, tNewLine )
+
+        print(Map)
+
+        tCrossings = np.greater(Map, np.ones( (MapSizeMax, MapSizeMax), dtype=np.uint8))
+
+        return np.sum(tCrossings)
