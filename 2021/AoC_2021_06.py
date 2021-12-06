@@ -72,4 +72,4 @@ if __name__== "__main__":
     AoC_Puzzle = AoC_2021( u'_inputs/2021_06_Data', UseSample=False, Verbosity=1)
 
     print(AoC_Puzzle.PartA()) # 386586
-    print(AoC_Puzzle.PartB()) # x
+    print(AoC_Puzzle.PartB()) # 1732821262171
