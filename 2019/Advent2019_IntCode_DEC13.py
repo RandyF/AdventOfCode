@@ -16,7 +16,7 @@ class ADV19_IntcodeComputer(object):
 
         self.LoadProgram(sIntcodeProg)
         self.LoadProgramToMemory(lArgs)
-        if self.Verbosity >= 2: print("Initialized DEC05 Intcode Computer")
+        if self.Verbosity >= 2: print("Initialized DEC13 Intcode Computer")
         if self.Verbosity >= 10: self.PrintIncodeMEM()
 
 
@@ -378,9 +378,13 @@ class ADV19_IntcodeComputer(object):
             print( "Something Went Wrong!" )
             if self.Verbosity >= 2: self.PrintIncodeMEM()
             return 1
-            
 
-    
+if __name__== "__main__":
+    tFile = open(u'../2021/_inputs/2021_07_Data.txt')
+    code = [int(i) for i in tFile.read().strip().split(',')]
+    tFile.close()
 
-        
-        
+    AoC = ADV19_IntcodeComputer( code, iVerbosity=10 )
+    AoC.RunFree()
+
+
