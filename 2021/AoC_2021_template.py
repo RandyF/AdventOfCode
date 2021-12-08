@@ -4,8 +4,6 @@ import numpy as np
 from AoC_Utils import debug
 from AoC_2021_Submarine import Submarine
 
-from AoC_2021_SegmentedDisplay import *
-
 #=========================================================================================
 # Day Class
 #=========================================================================================
