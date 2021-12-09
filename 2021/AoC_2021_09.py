@@ -36,24 +36,26 @@ class AoC_2021():
 
         tFile = open('%s.txt' % tFileName, 'r')
 
-        #PARSE DATA HERE
+        tScan = []
+        for tRow in tFile:
+            tScan.append( [int(i) for i in [*tRow.strip()]] )
+
+        self.PuzzleData = tScan
 
         tFile.close()
 
 
     def PartA(self):
-
-       return 0
+        return self.OurSub.BasinScanner.CalcRiskLevel(self.PuzzleData)
 
 
     def PartB(self):
-
-       return 0
+        return self.OurSub.BasinScanner.CalcBasinScore(self.PuzzleData)
 
 
 if __name__== "__main__":
 
-    AoC_Puzzle = AoC_2021( u'_inputs/2021_xx_Data', UseSample=False, Verbosity=1)
+    AoC_Puzzle = AoC_2021( u'_inputs/2021_09_Data', UseSample=False, Verbosity=1)
 
-    print(AoC_Puzzle.PartA()) # x
-    print(AoC_Puzzle.PartB()) # x
+    print(AoC_Puzzle.PartA()) # 496
+    print(AoC_Puzzle.PartB()) # 902880

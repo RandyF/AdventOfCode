@@ -3,6 +3,8 @@ from math import ceil
 import numpy as np
 
 from AoC_2021_BingoSubsystem import BingoSubsystem
+from AoC_2021_BasinScanner import BasinScanner
+
 
 class Submarine():
     Verbosity = None
@@ -10,11 +12,15 @@ class Submarine():
     
     Bingo = None
 
+    BasinScanner = None
+
     def __init__(self, Verbosity=0):
         self.Verbosity = Verbosity
         debug('Creating AoC Submarine...', DebugLevel=DBG_MINOR_START, Verbosity=self.Verbosity )
 
         self.Bingo = BingoSubsystem(Verbosity = self.Verbosity)
+
+        self.BasinScanner = BasinScanner(Verbosity = self.Verbosity)
 
         self.ResetPosition()
         debug('AoC Submarine Created.', DebugLevel=DBG_MINOR, Verbosity=self.Verbosity )
