@@ -1,9 +1,95 @@
 from AoC_Utils import *
-from math import ceil
+from math import ceil, floor
 import numpy as np
 
 from AoC_2021_BingoSubsystem import BingoSubsystem
 from AoC_2021_BasinScanner import BasinScanner
+
+
+class NavigationSystem():
+    Verbosity = None
+
+    def __init__(self, Verbosity=0):
+        self.Verbosity = Verbosity
+        
+    def LoadAndSyntaxCheck(self, NavFile):
+
+        Opens = ['(', '[', '{', '<']
+        Closes = [')', ']', '}', '>']
+
+        CorrScores = [ 3, 57, 1197, 25137 ]
+        AppScores = [ 1, 2, 3, 4 ]
+        tScore = 0
+        
+        tIncomplete = []
+        tCorruptedLines = []
+
+        for tLine in NavFile:
+            
+            tParsed = []
+            tOpened = []
+            
+            tPos = 0
+            tLineGood = True
+            for tChar in tLine:
+                
+                if tChar in Opens:
+                    tParsed.append(tChar)
+                    tOpened.append(tPos)
+                    tPos += 1
+
+                elif tChar in Closes:
+                    
+                    #print('tOpened', tOpened, tOpened[-1] )
+                    
+                    tLastOpen = tParsed[ tOpened[-1] ]
+                    tExpected = Closes[ Opens.index( tLastOpen ) ]
+
+                    if tChar == tExpected:
+                        tParsed.append(tChar)
+                        tPos += 1
+                        
+                        tOpened = tOpened[:-1]
+
+                    else:
+                        #print('illegal', tChar)
+                        tScore += CorrScores[ Closes.index( tChar ) ]
+                        
+                        tLineGood = False
+                        break
+
+            #print('Final Opened', tOpened)
+
+
+            if tLineGood:
+                tIncomplete.append( [tParsed, tOpened] )
+            else:
+                tCorruptedLines.append( [tParsed, tOpened])
+
+        CorruptScore = tScore 
+
+
+        AppendScores = []
+        for tLine, tCloses in tIncomplete:
+            tScore = 0
+
+            tAppend = []
+            tCloses.reverse()
+
+            for tIdx in tCloses:
+                tAppend.append( Closes[ Opens.index(tLine[ tIdx ] ) ] )
+
+            for tCh in tAppend:
+                tChScore = AppScores[ Closes.index( tCh ) ]
+
+                tScore = (tScore * 5) + tChScore
+
+            AppendScores.append(tScore)
+            
+        tSorted = sorted(AppendScores)
+
+
+        return CorruptScore, tSorted[floor(len(tSorted)/2)]
 
 
 class Submarine():
@@ -13,6 +99,8 @@ class Submarine():
     Bingo = None
 
     BasinScanner = None
+    
+    NavSystem = None
 
     def __init__(self, Verbosity=0):
         self.Verbosity = Verbosity
@@ -21,6 +109,7 @@ class Submarine():
         self.Bingo = BingoSubsystem(Verbosity = self.Verbosity)
 
         self.BasinScanner = BasinScanner(Verbosity = self.Verbosity)
+        self.NavSystem = NavigationSystem(Verbosity = self.Verbosity)
 
         self.ResetPosition()
         debug('AoC Submarine Created.', DebugLevel=DBG_MINOR, Verbosity=self.Verbosity )
